@@ -1,10 +1,7 @@
-import sys
 import socket
 import logging
 import json
 import threading
-
-import dicttoxml
 import os
 import ssl
 
@@ -22,19 +19,15 @@ alldata['10'] = dict(nomor=10, nama="mas cadangan 3", posisi="kiper")
 
 
 def proses_request(request_string):
-    # format request
-    # NAMACOMMAND spasi PARAMETER
     cstring = request_string.split(" ")
     hasil = None
     try:
         command = cstring[0].strip()
         if (command == 'getdatapemain'):
-            # getdata spasi parameter1
-            # parameter1 harus berupa nomor pemain
-            nomorpemain = cstring[1].strip()
+            nomor_pemain = cstring[1].strip()
             try:
-                logging.warning(f"data {nomorpemain} ketemu")
-                hasil = alldata[nomorpemain]
+                logging.warning(f"data {nomor_pemain} ketemu")
+                hasil = alldata[nomor_pemain]
             except:
                 hasil = None
     except:
@@ -42,9 +35,7 @@ def proses_request(request_string):
     return hasil
 
 
-def serialisasi(a):
-    # print(a)
-    # serialized = str(dicttoxml.dicttoxml(a))
+def serialize(a):
     serialized = json.dumps(a)
     logging.warning(f"serialized data : {serialized}")
     return serialized
@@ -112,7 +103,7 @@ def process_connection(client_address, connection):
                 hasil = proses_request(data_received)
                 logging.warning(f"hasil proses: {hasil}")
 
-                hasil = serialisasi(hasil)
+                hasil = serialize(hasil)
                 hasil += "\r\n\r\n"
                 connection.sendall(hasil.encode())
                 break
