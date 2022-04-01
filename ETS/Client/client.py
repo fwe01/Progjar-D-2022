@@ -87,13 +87,18 @@ def get_data_pemain(nomor=0, is_secure=False):
         print(f"gagal mendapatkan data pemain nomor {nomor}")
 
 
-def start_thread(thread_count=1, is_secure=False):
+def get_data_beberapa_pemain(amount, is_secure=False):
+    for request in range(amount):
+        get_data_pemain(random.randint(1, 10), is_secure)
+
+
+def start_thread(thread_count=1, request_amount_per_thread=1, is_secure=False):
     threads = dict()
 
     waktu_awal = datetime.datetime.now()
     for thread in range(thread_count):
-        threads[thread] = threading.Thread(target=get_data_pemain,
-                                           args=(random.randint(1, 10), is_secure))
+        threads[thread] = threading.Thread(target=get_data_beberapa_pemain,
+                                           args=(request_amount_per_thread, is_secure))
         threads[thread].start()
 
     for thread in range(thread_count):
@@ -105,4 +110,4 @@ def start_thread(thread_count=1, is_secure=False):
 
 
 if __name__ == '__main__':
-    start_thread(100, True)
+    start_thread(20, 5, True)
