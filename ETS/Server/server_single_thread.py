@@ -110,7 +110,7 @@ def process_connection(client_address, connection):
 
 if __name__ == '__main__':
     try:
-        run_server(('0.0.0.0', 16000), True)
+        run_server(('0.0.0.0', 16000), False)
     except KeyboardInterrupt:
         logging.warning("Control-C: Program berhenti")
         exit(0)

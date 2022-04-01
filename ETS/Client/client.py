@@ -17,7 +17,7 @@ def make_socket(destination_address='localhost', port=12000):
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_address = (destination_address, port)
-        logging.warning(f"connecting to {server_address}")
+        # logging.warning(f"connecting to {server_address}")
         sock.connect(server_address)
         return sock
     except Exception as ee:
@@ -32,17 +32,17 @@ def make_secure_socket(destination_address='localhost', port=10000):
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_address = (destination_address, port)
-        logging.warning(f"connecting to {server_address}")
+        # logging.warning(f"connecting to {server_address}")
         sock.connect(server_address)
         secure_socket = context.wrap_socket(sock, server_hostname=destination_address)
-        logging.warning(secure_socket.getpeercert())
+        # logging.warning(secure_socket.getpeercert())
         return secure_socket
     except Exception as ee:
         logging.warning(f"error {str(ee)}")
 
 
 def deserialisasi(s):
-    logging.warning(f"deserialisasi {s.strip()}")
+    # logging.warning(f"deserialisasi {s.strip()}")
     return json.loads(s)
 
 
@@ -54,13 +54,13 @@ def send_command(command_str, is_secure=False):
     else:
         sock = make_socket(alamat_server, port_server)
 
-    logging.warning(f"connecting to {default_server_address}")
+    # logging.warning(f"connecting to {default_server_address}")
     try:
-        logging.warning(f"sending message ")
+        # logging.warning(f"sending message ")
         sock.sendall(command_str.encode())
 
         data_received = ""  # empty string
-        logging.warning("waiting server response")
+        # logging.warning("waiting server response")
 
         while True:
             data = sock.recv(16)
@@ -71,10 +71,10 @@ def send_command(command_str, is_secure=False):
             else:
                 break
         hasil = deserialisasi(data_received)
-        logging.warning(f"data received from server: {hasil}")
+        # logging.warning(f"data received from server: {hasil}")
         return hasil
     except Exception as ee:
-        logging.warning(f"error during data receiving {str(ee)}")
+        # logging.warning(f"error during data receiving {str(ee)}")
         return False
 
 
@@ -92,15 +92,17 @@ def start_thread(thread_count=1, is_secure=False):
 
     waktu_awal = datetime.datetime.now()
     for thread in range(thread_count):
-        threads[thread] = threading.Thread(target=get_data_pemain, args=(random.randint(1, 10), is_secure))
+        threads[thread] = threading.Thread(target=get_data_pemain,
+                                           args=(random.randint(1, 10), is_secure))
         threads[thread].start()
 
     for thread in range(thread_count):
         threads[thread].join()
 
     waktu_akhir = datetime.datetime.now()
-    print(f"Waktu total yang dibutuhkan untuk menjalankan {thread_count} thread adalah {waktu_akhir - waktu_awal}")
+    print(
+        f"Waktu total yang dibutuhkan untuk menjalankan {thread_count} thread adalah {waktu_akhir - waktu_awal}")
 
 
 if __name__ == '__main__':
-    start_thread(5, True)
+    start_thread(100, True)
