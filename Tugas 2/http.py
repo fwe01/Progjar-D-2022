@@ -65,7 +65,6 @@ class HttpServer:
 
     def http_get(self, object_address, headers):
         files = glob('./*')
-        print(files)
         thedir = './'
         if (object_address == '/'):
             return self.response(200, 'OK', 'Ini Adalah web Server percobaan', dict())
